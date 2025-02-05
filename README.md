@@ -30,7 +30,7 @@
 [![GitHub Sponsors](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&label=claudemods&color=A836FF&logo=GitHub-Sponsors&logoColor=#white)](https://github.com/sponsors/claudemods)</div>
 
 <div align="center">
-# YoutubeAndDownloader
+YoutubeAndDownloader
 an app to use youtube and download videos as mp3s or mp4s 
 <div align="center">
 i cannot get youtube to keep signin info or cookies
