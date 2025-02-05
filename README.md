@@ -14,7 +14,7 @@
 
 <div align="center">
 
-[![Version](https://img.shields.io/github/v/release/claudemods/YoutubeAndDownloader?color=FFD700&label=Latest%20Release&style=for-the-badge)]()
+[![Version](https://img.shields.io/github/v/release/claudemods/YoutubeAndDownloader?color=FFD700&label=Latest%20Release&style=for-the-badge)](https://github.com/claudemods/YoutubeAndDownloader/releases/tag/youtube)
 
 
 </div>
