@@ -66,20 +66,36 @@ private:
 class FullScreenWebEnginePage : public QWebEnginePage {
     Q_OBJECT
 public:
-    FullScreenWebEnginePage(QWebEngineView *view, QWidget *mainWindow, QObject* parent = nullptr) : QWebEnginePage(parent), m_view(view), m_mainWindow(mainWindow) {
-        // Enable fullscreen support
-        settings()->setAttribute(QWebEngineSettings::FullScreenSupportEnabled, true);
+    FullScreenWebEnginePage(QWebEngineView *view, QWidget *mainWindow, QObject* parent = nullptr)
+    : QWebEnginePage(new QWebEngineProfile("YouTubePersistentProfile"), parent),
+    m_view(view),
+    m_mainWindow(mainWindow)
+    {
+        // Persistent session configuration
+        QWebEngineProfile* profile = this->profile();
+        QString dataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+
+        profile->setPersistentCookiesPolicy(QWebEngineProfile::ForcePersistentCookies);
+        profile->setCachePath(dataPath + "/youtube_cache");
+        profile->setPersistentStoragePath(dataPath + "/youtube_storage");
+        profile->setHttpCacheType(QWebEngineProfile::DiskHttpCache);
+
+        // Your original settings
+        QWebEngineSettings *settings = this->settings();
+        settings->setAttribute(QWebEngineSettings::LocalStorageEnabled, true);
+        settings->setAttribute(QWebEngineSettings::JavascriptEnabled, true);
+        settings->setAttribute(QWebEngineSettings::ScrollAnimatorEnabled, false);
+        settings->setAttribute(QWebEngineSettings::FullScreenSupportEnabled, true);
+
         connect(this, &QWebEnginePage::fullScreenRequested, this, &FullScreenWebEnginePage::fullScreenRequested);
     }
 
 private slots:
     void fullScreenRequested(QWebEngineFullScreenRequest request) {
         if (request.toggleOn()) {
-            // Enter fullscreen mode
             m_view->setParent(nullptr);
             m_view->showFullScreen();
         } else {
-            // Exit fullscreen mode
             m_view->setParent(m_mainWindow);
             m_view->showNormal();
         }
@@ -95,15 +111,9 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
     QWidget window;
-    window.setGeometry(100, 100, 800, 600); // Set initial window size
+    window.setGeometry(100, 100, 800, 600);
 
     QVBoxLayout layout(&window);
-
-    // Create a persistent web engine profile to save login details
-    QWebEngineProfile *profile = new QWebEngineProfile("youtube_profile", &window);
-    profile->setPersistentStoragePath(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/youtube_profile");
-    profile->setHttpCacheType(QWebEngineProfile::DiskHttpCache);
-    profile->setPersistentCookiesPolicy(QWebEngineProfile::ForcePersistentCookies);
 
     QWebEngineView webView;
     FullScreenWebEnginePage *page = new FullScreenWebEnginePage(&webView, &window, &webView);
@@ -134,7 +144,6 @@ int main(int argc, char *argv[]) {
     });
 
     window.show();
-
     return app.exec();
 }
 
